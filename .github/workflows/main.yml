@@ -1,0 +1,32 @@
+name: assignment-test
+on:
+    push:
+        tags-ignore:
+            - '*'
+        branches:
+            - '*'
+
+env:
+  AESD_CONTAINER_PREFIX=cuaesd
+  AESD_CONTAINER_TAG_UNIT_TEST=24-unit-test
+  AESD_CONTAINER_TAG_FULL_TEST=24-assignment1
+
+jobs:
+    unit-test:
+        container: ${{ env.AESD_CONTAINER_PREFIX }}/aesd-autotest:${{ env.AESD_CONTAINER_TAG_UNIT_TEST }}
+        runs-on: self-hosted
+        steps:
+          - uses: actions/checkout@v4
+          - name: Checkout submodules
+            run : git submodule update --init --recursive
+          - name: Run unit test
+            run: ./unit-test.sh
+    full-test:
+        container: ${{ env.AESD_CONTAINER_PREFIX }}/aesd-autotest:${{ env.AESD_CONTAINER_TAG_FULL_TEST }}
+        runs-on: self-hosted
+        steps:
+          - uses: actions/checkout@v4
+          - name: Checkout submodules
+            run : git submodule update --init --recursive
+          - name: Run full test
+            run: ./full-test.sh
